@@ -1,9 +1,11 @@
 import random
+import time
 
 class Player:
-    def __init__(self):
-        self.hp = 25
-        self.max_damage = 10
+    def __init__(self, hp, max_damage, name):
+        self.hp = hp
+        self.max_damage = max_damage
+        self.name = name
 
     def attack(self, other):
         damage = random.randint(1, self.max_damage)
@@ -17,22 +19,30 @@ class Enemy:
         self.name = name
 
     def attack(self, other):
+        time.sleep(0.8)
         damage = random.randint(1, self.max_damage)
         other.hp = other.hp - damage
         print('{player} gör {damage} skada på {other}. {other} har {hp} hp kvar.'.format(player=self.name, damage=damage, other=other.name, hp=other.hp))
 
-player = Player()
-player.name = 'Tyko'
-kobold = Enemy(hp=18, max_damage=7, name='Kobold')
+player = Player(hp=34, max_damage=12, name='Ewert')
+
+kobold = Enemy(hp=8, max_damage=7, name='Kobold')
+ork = Enemy(hp=24, max_damage=9, name='Ork')
+
+enemies = [kobold, ork]
 
 while True:
     if player.hp > 0:
-        player.attack(kobold)
+        player.attack(random.choice(enemies))
     else:
         print('{} är död.'.format(player.name))
         break
-    if kobold.hp > 0:
-        kobold.attack(player)
-    else:
-        print('{} är död.'.format(kobold.name))
+    for enemy in enemies:
+        if enemy.hp > 0:
+            enemy.attack(player)
+        else:
+            print('{} är död.'.format(enemy.name))
+            enemies.remove(enemy)
+    if len(enemies) == 0:
+        print('{} går segrande ur striden!'.format(player.name))
         break
