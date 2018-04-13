@@ -2,12 +2,15 @@ import random
 import time
 
 class GameObject:
-    def __init__(self, name, fighter=None, item=None):
+    def __init__(self, name, fighter=None, inventory=None, item=None):
         self.name = name
         self.fighter = fighter
+        self.inventory = inventory
         self.item = item
         if self.fighter:
             self.fighter.owner = self
+        if self.inventory:
+            self.inventory.owner = self
         if self.item:
             self.item.owner = self
 
@@ -29,6 +32,10 @@ class Fighter:
             self.hp = self.max_hp
         print('{} får tillbaka {} hp och har nu {} hp.'.format(self.owner.name, amount, self.hp))
 
+class Inventory:
+    def __init__(self):
+        self.items = {}
+
 class Item:
     def __init__(self, amount, use_function=None):
         self.amount = amount
@@ -42,13 +49,14 @@ class Item:
             print('{} har slut på {}.'.format(player.name, self.owner.name))
 
 def cast_heal():
-    player.fighter.heal(5)
+    player.fighter.heal(10)
 
 fighter_component = Fighter(hp=34, max_damage=12)
-player = GameObject(name='Ewert', fighter=fighter_component)
+player = GameObject(name='Ewert', fighter=fighter_component, inventory=Inventory())
 
 item_component = Item(amount=5, use_function=cast_heal)
 hp_potion = GameObject(name='HP-potion', item=item_component)
+player.inventory.items['hp_potion'] = hp_potion
 
 fighter_component = Fighter(hp=8, max_damage=7)
 kobold = GameObject(name='Kobold', fighter=fighter_component)
@@ -58,9 +66,10 @@ ork = GameObject(name='Ork', fighter=fighter_component)
 enemies = [kobold, ork]
 
 while True:
-    if player.fighter.hp > 0 and player.fighter.hp < 13:
-        hp_potion.item.use()
-    elif player.fighter.hp > 0:
+    if player.fighter.hp > 0:
+        if player.fighter.hp < 5 and player.inventory.items.get('hp_potion').item.amount > 0:
+            player.inventory.items.get('hp_potion').item.use()
+            continue # Enemy loses its turn when player uses health potion
         player.fighter.attack(random.choice(enemies))
     else:
         print('{} är död.'.format(player.name))
