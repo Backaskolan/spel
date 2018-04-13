@@ -1,45 +1,44 @@
 import random
 import time
 
-class Player:
-    def __init__(self, hp, max_damage, name):
+class GameObject:
+    def __init__(self, name, fighter=None):
+        self.name = name
+        self.fighter = fighter
+        if self.fighter:
+            self.fighter.owner = self
+
+    
+class Fighter:
+    def __init__(self, hp, max_damage):
         self.hp = hp
         self.max_damage = max_damage
-        self.name = name
-
-    def attack(self, other):
-        damage = random.randint(1, self.max_damage)
-        other.hp = other.hp - damage
-        print('{player} gör {damage} skada på {other}. {other} har {hp} hp kvar.'.format(player=self.name, damage=damage, other=other.name, hp=other.hp))
-
-class Enemy:
-    def __init__(self, hp, max_damage, name):
-        self.hp = hp
-        self.max_damage = max_damage
-        self.name = name
 
     def attack(self, other):
         time.sleep(0.8)
         damage = random.randint(1, self.max_damage)
-        other.hp = other.hp - damage
-        print('{player} gör {damage} skada på {other}. {other} har {hp} hp kvar.'.format(player=self.name, damage=damage, other=other.name, hp=other.hp))
+        other.fighter.hp = other.fighter.hp - damage
+        print('{player} gör {damage} skada på {other}. {other} har {hp} hp kvar.'.format(player=self.owner.name, damage=damage, other=other.name, hp=other.fighter.hp))
 
-player = Player(hp=34, max_damage=12, name='Ewert')
+fighter_component = Fighter(hp=34, max_damage=12)
+player = GameObject(name='Ewert', fighter=fighter_component)
 
-kobold = Enemy(hp=8, max_damage=7, name='Kobold')
-ork = Enemy(hp=24, max_damage=9, name='Ork')
+fighter_component = Fighter(hp=8, max_damage=7)
+kobold = GameObject(name='Kobold', fighter=fighter_component)
+fighter_component = Fighter(hp=24, max_damage=9)
+ork = GameObject(name='Ork', fighter=fighter_component)
 
 enemies = [kobold, ork]
 
 while True:
-    if player.hp > 0:
-        player.attack(random.choice(enemies))
+    if player.fighter.hp > 0:
+        player.fighter.attack(random.choice(enemies))
     else:
         print('{} är död.'.format(player.name))
         break
     for enemy in enemies:
-        if enemy.hp > 0:
-            enemy.attack(player)
+        if enemy.fighter.hp > 0:
+            enemy.fighter.attack(player)
         else:
             print('{} är död.'.format(enemy.name))
             enemies.remove(enemy)
