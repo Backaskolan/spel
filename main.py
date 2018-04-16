@@ -25,8 +25,11 @@ class Fighter:
     def attack(self, other):
         time.sleep(0.8)
         damage = random.randint(1, self.max_damage)
-        other.fighter.hp = other.fighter.hp - damage
+        other.fighter.take_damage(damage)
         print('{player} gör {damage} skada på {other}. {other} har {hp} hp kvar.'.format(player=self.owner.name, damage=damage, other=other.name, hp=other.fighter.hp))
+
+    def take_damage(self, damage):
+        self.hp = self.hp - damage
 
     def flee(self):
         print(f'{self.owner.name} flyr med svansen mellan benen.')
@@ -36,13 +39,12 @@ class Action:
     def __init__(self, name, action, target=None):
         self.name = name
         self.action = action
-        self.target = target
 
 class InputHandler:
     def __init__(self, owner):
         self.owner = owner
         self.actions = {
-            'a': Action(name='attackera', action=self.owner.fighter.attack, target=random.choice(enemies)),
+            'a': Action(name='attackera', action=self.owner.fighter.attack),
             'f': Action(name='fly', action=self.owner.fighter.flee),
             'q': Action(name='avsluta', action=quit_game)
         }
@@ -54,8 +56,8 @@ class InputHandler:
         action = input(available_actions)
         if action in self.actions.keys():
             chosen_action = self.actions[action]
-            if chosen_action.target:
-                chosen_action.action(chosen_action.target)
+            if chosen_action.name == 'attackera':
+                chosen_action.action(random.choice(enemies))
             else: 
                 chosen_action.action()
         else:
