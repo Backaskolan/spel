@@ -28,11 +28,11 @@ class Enemy:
 player = Player(hp=34, max_damage=12, name='Ewert')
 player2 = Player(hp=29, max_damage=15, name='Smulan')
 
-kobold = Enemy(hp=8, max_damage=7, name='Kobold')
-ork = Enemy(hp=24, max_damage=9, name='Ork')
+enemy1 = Enemy(hp=8, max_damage=7, name='Kobold')
+enemy2 = Enemy(hp=24, max_damage=9, name='Ork')
 
 party = [player, player2]
-enemies = [kobold, ork]
+enemies = [enemy1, enemy2]
 
 while True:
     for player in party:
@@ -48,5 +48,5 @@ while True:
             print('{} är död.'.format(enemy.name))
             enemies.remove(enemy)
     if len(enemies) == 0:
-        print('{} går segrande ur striden!'.format(player.name))
+        print('{} går segrande ur striden!'.format(' och '.join([player.name for player in party])))
         break
