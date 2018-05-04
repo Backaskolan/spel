@@ -42,6 +42,8 @@ while True:
             except IndexError:
                 print('{} går segrande ur striden!'.format(' och '.join([player.name for player in party])))
                 break
+            player.attack(random.choice([enemy for enemy in enemies if enemy.hp > 0]))
+
         else:
             print('{} är död.'.format(player.name))
             break
