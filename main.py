@@ -37,7 +37,7 @@ enemies = [enemy1, enemy2]
 while True:
     for player in party:
         if player.hp > 0:
-            player.attack(random.choice(enemies))
+            player.attack(random.choice([enemy for enemy in enemies if enemy.hp > 0]))
         else:
             print('{} är död.'.format(player.name))
             break
