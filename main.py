@@ -37,7 +37,11 @@ enemies = [enemy1, enemy2]
 while True:
     for player in party:
         if player.hp > 0:
-            player.attack(random.choice(enemies))
+            try:
+                player.attack(random.choice([enemy for enemy in enemies if enemy.hp > 0]))
+            except IndexError:
+                print('{} går segrande ur striden!'.format(' och '.join([player.name for player in party])))
+                break
         else:
             print('{} är död.'.format(player.name))
             break
