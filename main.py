@@ -7,8 +7,6 @@ class GameObject:
         self.fighter = fighter
         if self.fighter:
             self.fighter.owner = self
-
-    
 class Fighter:
     def __init__(self, hp, max_damage):
         self.hp = hp
