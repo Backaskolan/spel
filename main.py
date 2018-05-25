@@ -18,22 +18,27 @@ class Fighter:
         other.fighter.hp = other.fighter.hp - damage
         print('{player} gör {damage} skada på {other}. {other} har {hp} hp kvar.'.format(player=self.owner.name, damage=damage, other=other.name, hp=other.fighter.hp))
 
-fighter_component = Fighter(hp=34, max_damage=12)
-player = GameObject(name='Ewert', fighter=fighter_component)
+fighter_component = Fighter(hp=4, max_damage=12)
+player1 = GameObject(name='Ewert', fighter=fighter_component)
+fighter_component = Fighter(hp=6, max_damage=17)
+player2 = GameObject(name='Gun-Britt', fighter=fighter_component)
 
-fighter_component = Fighter(hp=8, max_damage=7)
+fighter_component = Fighter(hp=18, max_damage=7)
 kobold = GameObject(name='Kobold', fighter=fighter_component)
 fighter_component = Fighter(hp=24, max_damage=9)
 ork = GameObject(name='Ork', fighter=fighter_component)
 
+party = [player1, player2]
 enemies = [kobold, ork]
 
 while True:
-    if player.fighter.hp > 0:
-        player.fighter.attack(random.choice(enemies))
-    else:
-        print('{} är död.'.format(player.name))
-        break
+    for player in party:
+        if player.fighter.hp > 0:
+            player.fighter.attack(random.choice(enemies))
+        else:
+            print('{} är död.'.format(player.name))
+            party.remove(player)
+            break
     for enemy in enemies:
         if enemy.fighter.hp > 0:
             enemy.fighter.attack(player)
@@ -41,5 +46,8 @@ while True:
             print('{} är död.'.format(enemy.name))
             enemies.remove(enemy)
     if len(enemies) == 0:
-        print('{} går segrande ur striden!'.format(player.name))
+        print('{} går segrande ur striden!'.format(' och '.join([player.name for player in party])))
+        break
+    if len(party) == 0:
+        print('Game Over')
         break
